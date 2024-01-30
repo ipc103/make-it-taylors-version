@@ -1,0 +1,48 @@
+name: Make it Taylor's Version
+
+permissions:
+  issues: write
+  pull-requests: write
+  discussions: write
+
+on:
+  issues:
+    types:
+     - opened
+  pull_request:
+    types:
+     - opened
+  discussion:
+    types:
+     - created
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            let number = -1;
+            let type = '';
+            if (context.payload.issue) {
+              number = context.payload.issue.number;
+              type = "issue"
+            } else if (context.payload.pull_request) {
+              number = context.payload.pull_request.number;
+              type = "pull_request"
+            } else if (context.payload.discussion) {
+              number = context.payload.discussion.number;
+              type = "discussion"
+            }
+            if (number !== 1989){
+                return;
+            }
+            // Update the issue, pull_request, or discussion title to be "#{title} (Taylor's Version)"
+            github.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: number,
+              title: `${context.payload[type].title} (Taylor's Version)`
+            })
