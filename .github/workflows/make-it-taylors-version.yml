@@ -12,6 +12,7 @@ on:
   pull_request:
     types:
      - opened
+     - ready_for_review
   discussion:
     types:
      - created
@@ -28,18 +29,37 @@ jobs:
             let item = null;
             if (context.payload.issue) {
               item = context.payload.issue;
+              type = 'issue';
             } else if (context.payload.pull_request) {
               item = context.payload.pull_request;
+              type = 'pull_request';
             } else if (context.payload.discussion) {
               item = context.payload.discussion;
+              type = 'discussion';
             }
             if (item.number !== 1989 && item.title.indexOf("Taylor's Version") === -1 && item.title.indexOf("THIS IS A TEST") === -1) {
                 return;
             }
             // Update the issue, pull_request, or discussion title to be "#{title} (Taylor's Version)"
-            github.rest.issues.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: item.number,
-              title: `${item.title} (Taylor's Version)`
-            })
+            if (type === 'issue'){
+                github.rest.issues.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: item.number,
+                    title: `${item.title} (Taylor's Version)`
+                })
+            } else if (type === 'pull_request'){
+                github.rest.pulls.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    pull_number: item.number,
+                    title: `${item.title} (Taylor's Version)`
+                })
+            } else if (type === 'discussion'){
+                github.rest.discussions.update({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    discussion_number: item.number,
+                    title: `${item.title} (Taylor's Version)`
+                })
+            }
