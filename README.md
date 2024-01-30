@@ -17,5 +17,6 @@ Yes.
 I think so.
 
 **What if I hate this?**
+
 Haters gonna hate, hate, hate, hate, hate.
 Baby, I'm just gonna shake, shake, shake, shake, shake.
