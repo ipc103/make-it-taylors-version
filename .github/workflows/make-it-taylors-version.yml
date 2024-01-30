@@ -56,10 +56,14 @@ jobs:
                     title: `${item.title} (Taylor's Version)`
                 })
             } else if (type === 'discussion'){
-                github.rest.discussions.update({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    discussion_number: item.number,
-                    title: `${item.title} (Taylor's Version)`
-                })
+                console.log(item)
+              // Update the discussion title via the GraphQL API since REST seems unavailable
+                const query = `mutation {
+                    updateDiscussion(input: {discussionId: "${item.node_id}", title: "${item.title} (Taylor's Version)"}) {
+                    discussion {
+                        title
+                    }
+                    }
+                }`;
+                github.graphql(query);
             }
