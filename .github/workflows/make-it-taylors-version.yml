@@ -37,7 +37,7 @@ jobs:
               item = context.payload.discussion;
               type = 'discussion';
             }
-            if (item.number !== 1989 && item.title.indexOf("Taylor's Version") === -1 && item.title.indexOf("THIS IS A TEST") === -1) {
+            if (item.number !== 1989 && item.title.indexOf("Taylor's Version") === -1) {
                 return;
             }
             // Update the issue, pull_request, or discussion title to be "#{title} (Taylor's Version)"
