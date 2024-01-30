@@ -24,25 +24,22 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            let number = -1;
             let type = '';
+            let item = null;
             if (context.payload.issue) {
-              number = context.payload.issue.number;
-              type = "issue"
+              item = context.payload.issue;
             } else if (context.payload.pull_request) {
-              number = context.payload.pull_request.number;
-              type = "pull_request"
+              item = context.payload.pull_request;
             } else if (context.payload.discussion) {
-              number = context.payload.discussion.number;
-              type = "discussion"
+              item = context.payload.discussion;
             }
-            if (number !== 1989){
+            if (item.number !== 1989 && item.title.indexOf("Taylor's Version") === -1 && item.title.indexOf("THIS IS A TEST") === -1) {
                 return;
             }
             // Update the issue, pull_request, or discussion title to be "#{title} (Taylor's Version)"
             github.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: number,
-              title: `${context.payload[type].title} (Taylor's Version)`
+              issue_number: item.number,
+              title: `${item.title} (Taylor's Version)`
             })
