@@ -37,7 +37,7 @@ jobs:
                 return;
             }
             // Update the issue, pull_request, or discussion title to be "#{title} (Taylor's Version)"
-            github.issues.update({
+            github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: item.number,
