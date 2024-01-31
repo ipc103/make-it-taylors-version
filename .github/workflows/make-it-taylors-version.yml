@@ -37,9 +37,14 @@ jobs:
               item = context.payload.discussion;
               type = 'discussion';
             }
-            if (item.number !== 1989 && item.title.indexOf("Taylor's Version") === -1) {
+            if (item.number !== 1989) {
                 return;
             }
+
+            if (item.title.indexOf("Taylor's Version") !== -1) {
+              return;
+            }
+            
             // Update the issue, pull_request, or discussion title to be "#{title} (Taylor's Version)"
             if (type === 'issue'){
                 github.rest.issues.update({
@@ -57,7 +62,7 @@ jobs:
                 })
             } else if (type === 'discussion'){
                 console.log(item)
-              // Update the discussion title via the GraphQL API since REST seems unavailable
+              // Update the discussion title via the GraphQL API
                 const query = `mutation {
                     updateDiscussion(input: {discussionId: "${item.node_id}", title: "${item.title} (Taylor's Version)"}) {
                     discussion {
