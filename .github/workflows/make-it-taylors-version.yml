@@ -25,4 +25,8 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const t='Taylor\'s Version',i=context.payload.issue,p=context.payload.pull_request,d=context.payload.discussion,x=i||p||d;if(x.number!==1989||~x.title.indexOf(t))return;i?github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:x.number,title:`${x.title} (${t})`}):p?github.rest.pulls.update({owner:context.repo.owner,repo:context.repo.repo,pull_number:x.number,title:`${x.title} (${t})`}):d&&github.graphql(`mutation{updateDiscussion(input:{discussionId:"${x.node_id}",title:"${x.title} (${t})"}){discussion{title}}}`)
+            const suffix='Taylor\'s Version';
+            const item=context.payload.issue||context.payload.pull_request||context.payload.discussion;
+            if(item.number!==1989||item.title.includes(suffix))return;
+            const newTitle=`${item.title} (${suffix})`;
+            context.payload.issue?github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:item.number,title:newTitle}):context.payload.pull_request?github.rest.pulls.update({owner:context.repo.owner,repo:context.repo.repo,pull_number:item.number,title:newTitle}):github.graphql(`mutation{updateDiscussion(input:{discussionId:"${item.node_id}",title:"${newTitle}"}){discussion{title}}}`)
